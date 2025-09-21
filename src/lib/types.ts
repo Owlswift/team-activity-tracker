@@ -21,6 +21,11 @@ export interface UseNotesReturn {
   deleteNote: (id: string, profile: Profile) => Promise<void>;
 }
 
+export interface AnalyticsData {
+  userNotes: number;
+  teamNotes: number;
+}
+
 export type NavbarProps = {
   title: "Dashboard" | "Analytics";
 };

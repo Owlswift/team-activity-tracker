@@ -13,6 +13,7 @@ export default function Dashboard() {
     adding,
     isRealTimeUpdating,
     addNote,
+    deleting,
     deleteNote,
   } = useNotes(user);
 
@@ -95,15 +96,18 @@ export default function Dashboard() {
                   {new Date(note.created_at).toLocaleString()}
                 </span>
               </div>
-              {note.user_id === user?.id && (
-                <button
-                  onClick={() => handleDeleteNote(note.id)}
-                  className="text-red-500 hover:text-red-700 ml-2"
-                  aria-label="Delete note"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              )}
+              {note.user_id === user?.id &&
+                (deleting ? (
+                  <LoaderIcon className="w-5 h-5 text-red-500" />
+                ) : (
+                  <button
+                    onClick={() => handleDeleteNote(note.id)}
+                    className="text-red-500 hover:text-red-700 ml-2 cursor-pointer"
+                    aria-label="Delete note"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                ))}
             </div>
           ))
         )}

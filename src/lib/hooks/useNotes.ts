@@ -1,21 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { Note, Profile } from "@/lib/types";
+import { Note, Profile, UseNotesReturn } from "@/lib/types";
 import * as noteService from "@/services/noteServices";
 import { supabase } from "@/lib/superbaseClient";
-
-export interface UseNotesReturn {
-  notes: Note[];
-  loading: boolean;
-  adding: boolean;
-  isRealTimeUpdating: boolean;
-  addNote: (content: string, profile: Profile) => Promise<void>;
-  deleteNote: (id: string, profile: Profile) => Promise<void>;
-}
 
 export const useNotes = (profile: Profile | null): UseNotesReturn => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [isRealTimeUpdating, setIsRealTimeUpdating] = useState(false);
 
   useEffect(() => {
@@ -93,11 +85,14 @@ export const useNotes = (profile: Profile | null): UseNotesReturn => {
   }, []);
 
   const deleteNote = useCallback(async (id: string, profile: Profile) => {
+    setDeleting(true);
     try {
       await noteService.deleteNote(id, profile);
     } catch (error) {
       console.error("Error deleting note:", error);
       throw error;
+    } finally {
+      setDeleting(false);
     }
   }, []);
 
@@ -107,6 +102,7 @@ export const useNotes = (profile: Profile | null): UseNotesReturn => {
     adding,
     isRealTimeUpdating,
     addNote,
+    deleting,
     deleteNote,
   };
 };
