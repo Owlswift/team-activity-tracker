@@ -1,43 +1,19 @@
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import * as userService from "@/services/userServices";
+import { useAuthForm } from "@/lib/hooks/useAuthForm";
 
 export default function Home() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isSignUp, setIsSignUp] = useState(false);
-
-  const handleAuth = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (isSignUp) {
-        await userService.signUpUser(email, password, role);
-      } else {
-        await userService.loginUser(email, password);
-      }
-      router.push("/dashboard");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Something went wrong");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    role,
+    setRole,
+    isSignUp,
+    setIsSignUp,
+    loading,
+    error,
+    handleAuth,
+  } = useAuthForm();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 to-indigo-100">
